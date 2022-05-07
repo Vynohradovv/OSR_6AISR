@@ -13,57 +13,50 @@ extern unsigned short int* textEkran;
 
 R_P_KEYBOARD_TMSLAB WorldKey;
 
-void OSM_World::DrawArrow1(void)
-{
-	for(int i=0; i< LCD_H/2; i++)
-	{
-		if(!(i%5))
-		{
-			SetPixel(ekran,i, (i - 10));
-		}
-	}
-}
-
-void OSM_World::DrawArrow9(void)
-{
-	for(int i = LCD_H; i > LCD_H/2; i--)
-	{
-		if(!(i%5))
-		{
-			SetPixel(ekran,(i+(LCD_W/2)), i);
-		}
-	}
-}
-
-void OSM_World::DrawArrow3(void)
-{
-	/* Do zrobienia*/
-}
-
 void OSM_World::DrawArrow4(void)
 {
-	for(int i=30; i< 100; i++)
+	 int i = 0;
+	for (int y = 53; y < 63; y++)
 	{
-		if(!(i%5))
+		for (int x = 0; x <= arrow_size; x++)
 		{
-			SetPixel(ekran,i, LCD_H/2);
+			SetPixel(ekran, (x + i), y);
 		}
+		i++;
+	}
+
+	for (int y = 63; y < 74; y++)
+	{
+		for (int x = arrow_size; x >= 0; x--)
+		{
+			SetPixel(ekran, (x + i), y);
+		}
+		i--;
 	}
 }
 
-void OSM_World::DrawArrow7(void)
-{
-	/* Do zrobienia*/
-}
 
 void OSM_World::DrawArrow6(void)
 {
-	for(int i=210; i > 140; i--)
+
+	int i = 0;
+
+	for (int y = 53; y < 63; y++)
 	{
-		if(!(i%5))
+		for (int x = 239; x >= 239 - arrow_size; x--)
 		{
-			SetPixel(ekran,i, LCD_H/2);
+			SetPixel(ekran, (x - i), y);
 		}
+		i++;
+	}
+
+	for (int y = 63; y < 74; y++)
+	{
+		for (int x = 239 - arrow_size; x <= 239; x++)
+		{
+			SetPixel(ekran, (x - i), y);
+		}
+		i--;
 	}
 }
 
@@ -81,10 +74,8 @@ void OSM_World::DrawWay(void)
 	 switch(Key)
 	 {
 	 case 1:
-		 this->DrawArrow1();
 		 break;
 	 case 3:
-		 this->DrawArrow3();
 		 break;
 	 case 4:
 		 this->DrawArrow4();
@@ -93,10 +84,8 @@ void OSM_World::DrawWay(void)
 		 this->DrawArrow6();
 		 break;
 	 case 7:
-		 this->DrawArrow7();
 		 break;
 	 case 9:
-		 this->DrawArrow9();
 		 break;
 
 	 default:

@@ -14,12 +14,10 @@
 class OSM_World
 {
 private:
-	void DrawArrow1(void);
+	int arrow_size = 15;
+
 	void DrawArrow4(void);
 	void DrawArrow6(void);
-	void DrawArrow3(void);
-	void DrawArrow7(void);
-	void DrawArrow9(void);
 public:
 	OSM_World(void);
 	void DrawWay(void);
