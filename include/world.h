@@ -14,13 +14,18 @@
 class OSM_World
 {
 private:
-	int arrow_size = 15;
+	int arrow_size;
+	int gPosX, gPosY;
 
-	void DrawArrow4(void);
-	void DrawArrow6(void);
+	void DrawArrowRight(void);
+	void DrawArrowLeft(void);
+	void Square(int size_x, int size_y);
+	void Square(int size_x, int size_y, int pos_x, int pos_y);
+	void MoveSquare(int dx, int dy);
+	void RoadMove(void);
 public:
 	OSM_World(void);
-	void DrawWay(void);
+	void DrawWay(unsigned char &Key);
 	void ClearScreen(void);
 };
 
