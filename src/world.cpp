@@ -10,8 +10,11 @@
 
 #include "square.h"
 
+#include <stdio.h>
+
 extern unsigned long *ekran; /* 240 x 128 */
 extern unsigned short int* textEkran;
+extern int Tim;                // Licznik uzytkownika
 
 R_P_KEYBOARD_TMSLAB WorldKey;
 
@@ -103,8 +106,54 @@ void OSM_World::DrawWay(unsigned char &Key)
 		 this->ClearScreen();
 		 this->Square(10,30);
 		 this->RoadMove();
+		 this->PrintMenu();
 		 break;
 	 }
+
+}
+
+void OSM_World::PrintMenu(void)
+{
+	char PiParam [] 	= "PI PARAM";
+	char PiParamKp [] 	= "Kp =     ";
+	char PiParamKi [] 	= "Ki =     ";
+	char PiParamTi [] 	= "Ti =     ";
+
+	char ObjParam [] 	= "OBJ PARAM";
+	char ObjParamKp [] 	= "Kp =     ";
+	char ObjParamT [] 	= "T  =     ";
+
+	char DisParam [] 	= "DISRUPTION";
+	char DisParamZ [] 	= "Z =     ";
+
+	disp_val = Tim;
+	printf("my class time %i \n",Tim);
+
+	PrintText(textEkran,PiParam, 8, 0, 0);
+
+	sprintf(PiParamKp + 5,"%d.%02u", (int) disp_val, (int) ((disp_val - (int) disp_val ) * 100) );
+	sprintf(PiParamKi + 5,"%d.%02u", (int) disp_val, (int) ((disp_val - (int) disp_val ) * 100) );
+	sprintf(PiParamTi + 5,"%d.%02u", (int) disp_val, (int) ((disp_val - (int) disp_val ) * 100) );
+
+
+	PrintText(textEkran,PiParamKp, 9, 0, 1);
+	PrintText(textEkran, PiParamKi, 9, 0, 2);
+
+	PrintText(textEkran, PiParamTi, 9, 0, 3);
+
+
+	// Wy�wietlanie paramter�w obiektu regulacji
+	sprintf(ObjParamKp + 5,"%d.%02u", (int) disp_val, (int) ((disp_val - (int) disp_val ) * 100) );
+	sprintf(ObjParamT + 5,"%d.%02u", (int) disp_val, (int) ((disp_val - (int) disp_val ) * 100) );
+	sprintf(DisParamZ + 4,"%d.%02u", (int) disp_val, (int) ((disp_val - (int) disp_val ) * 100) );
+
+	PrintText(textEkran, ObjParam, 9, 30, 0);
+	PrintText(textEkran, ObjParamKp, 9, 30, 1);
+	PrintText(textEkran, ObjParamT, 9, 30, 2);
+
+	// Wy�wietlanie warto�ci zak��cenia
+	PrintText(textEkran, DisParam, 10, 15, 0);
+	PrintText(textEkran, DisParamZ, 8, 16, 1);
 
 }
 

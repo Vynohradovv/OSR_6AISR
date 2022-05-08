@@ -109,7 +109,7 @@ void Drawline(void);
 #ifdef WIN_PLOT
 	// Zapis danych do pliku
 	fprintf(outputCSV,CSV_DANE);
-	printf("time %i \n",Tim);
+	//printf("time %i \n",Tim);
 	fflush(outputCSV);
 	fflush(stdout);
 #endif
@@ -270,16 +270,4 @@ void Drawline(void);
         }
 
     #endif
-    }
-
-    void Drawline(void)
-    {
-        for (int dl_x = 0; dl_x <= 240; dl_x++)
-        {
-
-            SetPixel(ekran, dl_x, 50);
-            SetPixel(ekran, dl_x, dl_x - 10);
-            SetPixel(ekran, 50, dl_x);
-
-        }
     }

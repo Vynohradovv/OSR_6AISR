@@ -16,6 +16,7 @@ class OSM_World
 private:
 	int arrow_size;
 	int gPosX, gPosY;
+	int disp_val;
 
 	void DrawArrowRight(void);
 	void DrawArrowLeft(void);
@@ -23,6 +24,7 @@ private:
 	void Square(int size_x, int size_y, int pos_x, int pos_y);
 	void MoveSquare(int dx, int dy);
 	void RoadMove(void);
+	void PrintMenu(void);
 public:
 	OSM_World(void);
 	void DrawWay(unsigned char &Key);
