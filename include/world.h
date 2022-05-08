@@ -16,7 +16,8 @@ class OSM_World
 private:
 	int arrow_size;
 	int gPosX, gPosY;
-	int disp_val;
+	int usKP, usKI, usTI;
+	int regKP, regT, regZ;
 
 	void DrawArrowRight(void);
 	void DrawArrowLeft(void);
@@ -25,10 +26,16 @@ private:
 	void MoveSquare(int dx, int dy);
 	void RoadMove(void);
 	void PrintMenu(void);
+	void PIDParamitersValue(int CodeKay);
+	void CalculatePID(void);
+	void ClearScreen(void);
+
+	void PrinfLCD(char *buff, const int &value);
+
 public:
 	OSM_World(void);
 	void DrawWay(unsigned char &Key);
-	void ClearScreen(void);
+
 };
 
 

@@ -16,7 +16,23 @@ extern unsigned long *ekran; /* 240 x 128 */
 extern unsigned short int* textEkran;
 extern int Tim;                // Licznik uzytkownika
 
+const int stepReg = 1;
+
+static char PiParamKp [] 	= "Kp =      "	;
+static char PiParamKi [] 	= "Ki =      "	;
+static char PiParamTi [] 	= "Ti =      "	;
+
+static char ObjParamKp [] 	= "Kp =      "	;
+static char ObjParamT [] 	= "T  =      "	;
+
+static char DisParamZ [] 	= "Z =       "	;
+
 R_P_KEYBOARD_TMSLAB WorldKey;
+
+void OSM_World::PrinfLCD(char *buff, const int &value)
+{
+	sprintf(buff + 5,"%d",value);
+}
 
 void OSM_World::DrawArrowRight(void)
 {
@@ -75,6 +91,14 @@ OSM_World::OSM_World(void)
     arrow_size = 15;
     gPosX = 115;
     gPosY = 50;
+
+    PrinfLCD(PiParamKp, usKP = 0);
+    PrinfLCD(PiParamKi, usKI = 0);
+    PrinfLCD(PiParamTi, usTI = 0);
+
+    PrinfLCD(ObjParamKp, regKP = 0);
+    PrinfLCD(ObjParamT, regT = 0);
+    PrinfLCD(DisParamZ, regZ = 0);
 }
 
 void OSM_World::DrawWay(unsigned char &Key)
@@ -82,78 +106,58 @@ void OSM_World::DrawWay(unsigned char &Key)
 
 	 switch(Key % 10)
 	 {
-	 case 1:
-		 break;
-	 case 3:
-		 break;
-#ifdef TMSLAB_C2000
-	 case 8:
-#else
-	 case 4:
-#endif
-		 this->DrawArrowRight();
-		 break;
-	 case 6:
-		 this->DrawArrowLeft();
-		 break;
 	 case 7:
+		 this->DrawArrowRight();
+		 this->PIDParamitersValue(Key);
 		 break;
+
 	 case 9:
+		 this->DrawArrowLeft();
+		 this->PIDParamitersValue(Key);
 		 break;
 
 	 default:
+
+		 this->PIDParamitersValue(Key);
 
 		 this->ClearScreen();
 		 this->Square(10,30);
 		 this->RoadMove();
 		 this->PrintMenu();
+		 this->CalculatePID();
 		 break;
 	 }
 
 }
 
+void OSM_World::CalculatePID(void)
+{
+    PrinfLCD(ObjParamKp, regKP);
+    PrinfLCD(ObjParamT, regT);
+    PrinfLCD(DisParamZ, regZ);
+}
+
 void OSM_World::PrintMenu(void)
 {
-	char PiParam [] 	= "PI PARAM";
-	char PiParamKp [] 	= "Kp =     ";
-	char PiParamKi [] 	= "Ki =     ";
-	char PiParamTi [] 	= "Ti =     ";
 
-	char ObjParam [] 	= "OBJ PARAM";
-	char ObjParamKp [] 	= "Kp =     ";
-	char ObjParamT [] 	= "T  =     ";
+//	disp_val = Tim;
+//	printf("my class time %i \n",Tim);
 
-	char DisParam [] 	= "DISRUPTION";
-	char DisParamZ [] 	= "Z =     ";
+	PrintText(textEkran,"PI PARAM", 8, 0, 0);
 
-	disp_val = Tim;
-	printf("my class time %i \n",Tim);
-
-	PrintText(textEkran,PiParam, 8, 0, 0);
-
-	sprintf(PiParamKp + 5,"%d.%02u", (int) disp_val, (int) ((disp_val - (int) disp_val ) * 100) );
-	sprintf(PiParamKi + 5,"%d.%02u", (int) disp_val, (int) ((disp_val - (int) disp_val ) * 100) );
-	sprintf(PiParamTi + 5,"%d.%02u", (int) disp_val, (int) ((disp_val - (int) disp_val ) * 100) );
-
-
-	PrintText(textEkran,PiParamKp, 9, 0, 1);
+	PrintText(textEkran, PiParamKp, 9, 0, 1);
 	PrintText(textEkran, PiParamKi, 9, 0, 2);
-
 	PrintText(textEkran, PiParamTi, 9, 0, 3);
 
 
 	// Wy�wietlanie paramter�w obiektu regulacji
-	sprintf(ObjParamKp + 5,"%d.%02u", (int) disp_val, (int) ((disp_val - (int) disp_val ) * 100) );
-	sprintf(ObjParamT + 5,"%d.%02u", (int) disp_val, (int) ((disp_val - (int) disp_val ) * 100) );
-	sprintf(DisParamZ + 4,"%d.%02u", (int) disp_val, (int) ((disp_val - (int) disp_val ) * 100) );
-
-	PrintText(textEkran, ObjParam, 9, 30, 0);
+	PrintText(textEkran, "OBJ PARAM", 9, 30, 0);
 	PrintText(textEkran, ObjParamKp, 9, 30, 1);
 	PrintText(textEkran, ObjParamT, 9, 30, 2);
 
 	// Wy�wietlanie warto�ci zak��cenia
-	PrintText(textEkran, DisParam, 10, 15, 0);
-	PrintText(textEkran, DisParamZ, 8, 16, 1);
+	PrintText(textEkran, "DISRUPTION", 10, 30, 5);
+	PrintText(textEkran, DisParamZ, 8, 30, 6);
 
 }
 
@@ -169,8 +173,6 @@ void OSM_World::RoadMove(void)
         SetPixel(ekran,(LCD_W/2 - 10),i);
         SetPixel(ekran,(LCD_W/2 + 10),i);
     }
-
-  //  this->Square(10, 5, 50, 50);
 }
 
 void OSM_World::Square(int size_x, int size_y, int pos_x, int pos_y)
@@ -192,6 +194,55 @@ void OSM_World::MoveSquare(int dx, int dy)
         gPosX += dx;
     }
 
+}
+
+void OSM_World::PIDParamitersValue(int CodeKay)
+{
+	switch(CodeKay)
+	{
+	case 1:				/* KP */
+		usKP += stepReg;
+	    PrinfLCD(PiParamKp, usKP);
+		break;
+
+	case 4:
+		usKP -= stepReg;
+	    PrinfLCD(PiParamKp, usKP);
+		break;
+
+	case 2: 			/* KI */
+		usKI += stepReg;
+	    PrinfLCD(PiParamKi, usKI);
+		break;
+
+	case 5:
+		usKI -= stepReg;
+	    PrinfLCD(PiParamKi, usKI);
+		break;
+
+	case 3: 			/* TI */
+		usTI += stepReg;
+	    PrinfLCD(PiParamTi, usTI);
+		break;
+
+	case 6:
+		usTI -= stepReg;
+		PrinfLCD(PiParamTi, usTI);
+		break;
+
+	case 7:				/* Z */
+		regZ += stepReg;
+		PrinfLCD(DisParamZ, regZ);
+		break;
+
+	case 9:
+		regZ -= stepReg;
+		PrinfLCD(DisParamZ, regZ);
+		break;
+
+	default:
+		break;
+	}
 }
 
 void OSM_World::Square(int size_x, int size_y)
