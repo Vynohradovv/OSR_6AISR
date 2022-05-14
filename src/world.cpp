@@ -167,11 +167,11 @@ void OSM_World::RoadMove(void)
     {
         if(!(i%5))
         {
-            SetPixel(ekran,(LCD_W/2),i);
+            SetPixel(ekran,(LCD_W/2),(i + (Tim % 2)));
         }
 
-        SetPixel(ekran,(LCD_W/2 - 10),i);
-        SetPixel(ekran,(LCD_W/2 + 10),i);
+//        SetPixel(ekran,(LCD_W/2 - 10),i);
+//        SetPixel(ekran,(LCD_W/2 + 10),i);
     }
 }
 
@@ -247,6 +247,16 @@ void OSM_World::PIDParamitersValue(int CodeKay)
 
 void OSM_World::Square(int size_x, int size_y)
 {
+//    for (int b=(0+gPosY); b<(size_y+gPosY); b++)
+//    	SetPixel(ekran,(gPosX - 10),b);
+
+//    for (int b=(0+gPosY); b<(size_y+gPosY); b++)
+//        SetPixel(ekran,(gPosX + 10),b);
+//
+//    for (int a=(0+gPosX); a<(size_x+gPosX); a++)
+//    	 SetPixel(ekran,a,size_y);
+
+
     for (int b=(0+gPosY); b<(size_y+gPosY); b++)
       for (int a=(0+gPosX); a<(size_x+gPosX); a++)
           SetPixel(ekran,a,b);
