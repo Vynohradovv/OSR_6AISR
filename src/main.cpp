@@ -15,7 +15,7 @@
 
 
 #include "main.h"
-#include "world.h"
+#include "Ship.h"
 
 #ifdef TMSLAB_WIN
   #include "stdio.h"
@@ -40,10 +40,14 @@ int Tim = 0;                // Licznik uzytkownika
 unsigned int preScale = 0;  // Preskaler licznika uzytkownika
 volatile char EnableRefresh = 0;    //Zezwolenie na odswiezenie zawartosci pamieci graficznej
 
+double Kp = 1.3;
+double Ki = 10;
+double Kd = 5;
+
 R_P_LCD_TMSLAB LCD;             // Obiekt obslugujacy LCD
 R_P_KEYBOARD_TMSLAB KEYBOARD;   // Obiekt obslugujacy klawiature
 R_P_LEDBAR_TMSLAB LEDBAR;       // Obiekt obslugujacy diody LED
-
+Ship myShip(Kp, Ki, Kd);
 
 //Tablice danych/obiektow graficznych
 #define MaxObj 240
@@ -81,8 +85,6 @@ void Drawline(void);
 
 /*        LEDBAR.InitLedBar(); */
 
-        OSM_World OSRWorld;
-
         InitData();
 
         EnableInterrupts();
@@ -102,7 +104,8 @@ void Drawline(void);
             PrintText(textEkran, Bufor, 8, 16, 7);
             ClearScreen();
 */
-            OSRWorld.DrawWay(Key);
+            myShip.ProcessingShip(Key);
+
 /*            DrawPixels(Key); */
 #ifdef TMSLAB_WIN
             if(PartialRefresh()) return 0;
@@ -203,7 +206,9 @@ void Drawline(void);
     void Timer2Isr()
     {
         if(++preScale==500)
-        {   preScale=0;Tim++;}
+        {   preScale=0;
+        	Tim++;
+        }
     }
 #endif
 
