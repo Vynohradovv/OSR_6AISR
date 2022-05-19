@@ -14,12 +14,18 @@ private:
 	int arrow_size;
 	int gPosX, gPosY;
 
+	float *usKP,*usTD,*usTI;
+	float regKP,regT,*regZ;
+	float stepReg;
+
 	void RoadMove(void);
+	void PrintMenu(void);
 	void ClearScreen(void);
 	void DrawArrowLeft(void);
 	void DrawArrowRight(void);
 	void Square(int size_x, int size_y);
-	void PrinfLCD(char *buff, const int &value);
+	void PIDParamitersValue(int CodeKay);
+	void PrinfLCD(char *buff, const float &value);
 	void Square(int size_x, int size_y, int pos_x, int pos_y);
 
 public:
@@ -28,7 +34,10 @@ public:
 	#define LCD_W	(240)
 
 	LCDDrawing(void);
-	void PrintMenu(void);
+
+	void SetMenuParamiters(float *kp, float *td, float *ti);
+	void SetObjectParamiters(float objKP, float objT, float *objZ);
+
 	void MoveSquare(int dx, int dy);
 	void ProcessDrawing(unsigned char &Key);
 	int GetSquarePosition(void);

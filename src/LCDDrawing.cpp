@@ -16,21 +16,21 @@ extern unsigned long *ekran; /* 240 x 128 */
 extern unsigned short int* textEkran;
 extern int Tim;                // Licznik uzytkownika
 
-//static char PiParamKp [] 	= "Kp =      "	;
-//static char PiParamKi [] 	= "Ki =      "	;
-//static char PiParamTi [] 	= "Ti =      "	;
-//
-//static char ObjParamKp [] 	= "Kp =      "	;
-//static char ObjParamT [] 	= "T  =      "	;
-//
-//static char DisParamZ [] 	= "Z =       "	;
+static char PiParamKp [10] 	= "Kp:      "	;
+static char PiParamTi [10] 	= "Ti:      "	;
+static char PiParamTd [10] 	= "Td:      "	;
+
+static char ObjParamKp [10] 	= "Kp:      "	;
+static char ObjParamT [10] 	= "T:       "	;
+
+static char DisParamZ [10] 	= "Z:       "	;
 
 
 R_P_KEYBOARD_TMSLAB WorldKey;
 
-void LCDDrawing::PrinfLCD(char *buff, const int &value)
+void LCDDrawing::PrinfLCD(char *buff, const float &value)
 {
-	sprintf(buff + 5,"%d",value);
+	sprintf(buff + 3,"%f",value);
 }
 
 void LCDDrawing::DrawArrowRight(void)
@@ -90,16 +90,7 @@ LCDDrawing::LCDDrawing(void)
     gPosX = 115;
     gPosY = 50;
 
-
-//    PrinfLCD(PiParamKp, usKP = 0);
-//    PrinfLCD(PiParamKi, usKI = 0);
-//    PrinfLCD(PiParamTi, usTI = 0);
-//
-//    PrinfLCD(ObjParamKp, regKP = 0);
-//    PrinfLCD(ObjParamT, regT = 0);
-//    PrinfLCD(DisParamZ, regZ = 0);
-
-
+    stepReg = 0.5;
 }
 
 int LCDDrawing::GetSquarePosition(void)
@@ -109,51 +100,77 @@ int LCDDrawing::GetSquarePosition(void)
 
 void LCDDrawing::ProcessDrawing(unsigned char &Key)
 {
+	static unsigned char LastKey = 0;
+
 	 this->ClearScreen();
+
+	 if(LastKey != Key)
+	 {
+		 this->PIDParamitersValue(Key % 10);
+		 LastKey = Key;
+
+	 }
 
 	 switch(Key % 10)
 	 {
 	 case 7:
 		 this->DrawArrowRight();
-//		 this->PIDParamitersValue(Key);
 		 break;
 
 	 case 9:
 		 this->DrawArrowLeft();
-//		 this->PIDParamitersValue(Key);
 		 break;
 
 	 default:
 
-//		 this->PIDParamitersValue(Key);
-
 		 break;
 	 }
+
 
 
 	 this->Square(10,30);
 	 this->RoadMove();
 	 this->PrintMenu();
 
+
+}
+
+void LCDDrawing::SetMenuParamiters(float *kp, float *td, float *ti)
+{
+	usKP = kp;
+	usTD = td;
+	usTI = ti;
+
+	PrinfLCD(PiParamKp, *usKP);
+	PrinfLCD(PiParamTd, *usTD);
+	PrinfLCD(PiParamTi, *usTI);
+}
+
+void LCDDrawing::SetObjectParamiters(float objKP, float objT, float *objZ)
+{
+	regZ = objZ;
+
+	PrinfLCD(ObjParamKp, objKP);
+	PrinfLCD(ObjParamT, objT);
+	PrinfLCD(DisParamZ, *regZ);
 }
 
 void LCDDrawing::PrintMenu(void)
 {
 
 	PrintText(textEkran,"PI PARAM", 8, 0, 0);
-
-//	PrintText(textEkran, PiParamKp, 9, 0, 1);
-//	PrintText(textEkran, PiParamKi, 9, 0, 2);
-//	PrintText(textEkran, PiParamTi, 9, 0, 3);
+	PrintText(textEkran, PiParamKp, 7, 0, 1);
+	PrintText(textEkran, PiParamTd, 7, 0, 2);
+	PrintText(textEkran, PiParamTi, 7, 0, 3);
 
 	// Wy�wietlanie paramter�w obiektu regulacji
 	PrintText(textEkran, "OBJ PARAM", 9, 30, 0);
-//	PrintText(textEkran, ObjParamKp, 9, 30, 1);
-//	PrintText(textEkran, ObjParamT, 9, 30, 2);
+	PrintText(textEkran, ObjParamKp, 7, 30, 1);
+	PrintText(textEkran, ObjParamT, 7, 30, 2);
 
 	// Wy�wietlanie warto�ci zak��cenia
 	PrintText(textEkran, "DISRUPTION", 10, 30, 5);
-//	PrintText(textEkran, DisParamZ, 8, 30, 6);
+	PrintText(textEkran, DisParamZ, 7, 30, 6);
 
 }
 
@@ -169,54 +186,54 @@ void LCDDrawing::RoadMove(void)
     }
 }
 
-//void LCD::PIDParamitersValue(int CodeKay)
-//{
-//	switch(CodeKay)
-//	{
-//	case 1:				/* KP */
-//		usKP += stepReg;
-//	    PrinfLCD(PiParamKp, usKP);
-//		break;
-//
-//	case 4:
-//		usKP -= stepReg;
-//	    PrinfLCD(PiParamKp, usKP);
-//		break;
-//
-//	case 2: 			/* KI */
-//		usKI += stepReg;
-//	    PrinfLCD(PiParamKi, usKI);
-//		break;
-//
-//	case 5:
-//		usKI -= stepReg;
-//	    PrinfLCD(PiParamKi, usKI);
-//		break;
-//
-//	case 3: 			/* TI */
-//		usTI += stepReg;
-//	    PrinfLCD(PiParamTi, usTI);
-//		break;
-//
-//	case 6:
-//		usTI -= stepReg;
-//		PrinfLCD(PiParamTi, usTI);
-//		break;
-//
-//	case 7:				/* Z */
-//		regZ += stepReg;
-//		PrinfLCD(DisParamZ, regZ);
-//		break;
-//
-//	case 9:
-//		regZ -= stepReg;
-//		PrinfLCD(DisParamZ, regZ);
-//		break;
-//
-//	default:
-//		break;
-//	}
-//}
+void LCDDrawing::PIDParamitersValue(int CodeKay)
+{
+	switch(CodeKay)
+	{
+	case 1:				/* KP */
+		*usKP += stepReg;
+
+		break;
+
+	case 4:
+		*usKP -= stepReg;
+
+		break;
+
+	case 2: 			/* TD */
+		*usTD += stepReg;
+
+		break;
+
+	case 5:
+		*usTD -= stepReg;
+
+		break;
+
+	case 3: 			/* TI */
+		*usTI += stepReg;
+
+		break;
+
+	case 6:
+		*usTI -= stepReg;
+
+		break;
+
+	case 7:				/* Z */
+		*regZ += 5;
+
+		break;
+
+	case 9:
+		*regZ -= 5;
+
+		break;
+
+	default:
+		break;
+	}
+}
 
 void LCDDrawing::Square(int size_x, int size_y)
 {
