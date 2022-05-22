@@ -55,11 +55,11 @@ public:
 		Calculate();
 
 		float outPID = getOutput();
-		if(outPID > 0.0)
+		if((int)outPID > 5)
 		{
 			MoveSquare( 1 , 0 );
 
-		} else if(outPID < 0.0) {
+		} else if((int)outPID < -5) {
 
 			MoveSquare( -1 , 0 );
 

@@ -68,7 +68,7 @@ void Drawline(void);
     int main()
 
     {
-        SetUpPeripherials();
+   	SetUpPeripherials();
 #ifdef TMSLAB_C2000
         LCD.LCD_Init(ekran, textEkran);
 #endif

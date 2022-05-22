@@ -12,7 +12,7 @@ class LCDDrawing
 {
 private:
 	int arrow_size;
-	int gPosX, gPosY;
+	int gPosX, gPosY, gAngleZ;
 
 	float *usKP,*usTD,*usTI;
 	float regKP,regT,*regZ;
@@ -25,6 +25,7 @@ private:
 	void DrawArrowRight(void);
 	void Square(int size_x, int size_y);
 	void PIDParamitersValue(int CodeKay);
+	void MoveSquare(int dx, int dy, int angle);
 	void PrinfLCD(char *buff, const float &value);
 	void Square(int size_x, int size_y, int pos_x, int pos_y);
 
