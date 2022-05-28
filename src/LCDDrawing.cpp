@@ -10,12 +10,18 @@
 
 #include "square.h"
 
-#ifdef TMSLAB_WIN
+//#ifdef TMSLAB_WIN
   #include "stdio.h"
-#endif
+//#endif
 
 extern unsigned long *ekran; /* 240 x 128 */
+
+#ifdef TMSLAB_C2000
+extern unsigned char *textEkran; // Adres obszaru tekstowego [40*16/2]
+#else
 extern unsigned short int* textEkran;
+#endif
+
 extern int Tim;                // Licznik uzytkownika
 
 static char PiParamKp [10] 	= "Kp: ";
@@ -32,7 +38,11 @@ R_P_KEYBOARD_TMSLAB WorldKey;
 
 void LCDDrawing::PrinfLCD(char *buff, const float &value)
 {
+    #ifdef TMSLAB_WIN
 	sprintf(buff + 3,"%2.2f",value);
+#else
+	sprintf(buff + 3,"%d.%02u",(int)value, (int)((value - (int)value) * 100) );
+    #endif
 }
 
 void LCDDrawing::DrawArrowRight(void)
@@ -111,18 +121,27 @@ void LCDDrawing::ProcessDrawing(unsigned char &Key)
 
 	 if(LastKey != Key)
 	 {
-		 this->PIDParamitersValue(Key % 10);
+		 this->PIDParamitersValue(Key % 20);
 		 LastKey = Key;
 
 	 }
 
-	 switch(Key % 10)
+	 switch(Key % 20)
 	 {
-	 case 7:
+
+        #ifdef TMSLAB_WIN
+	     case 7:
+        #else
+	     case 12:
+        #endif
 		 this->DrawArrowRight();
 		 break;
 
-	 case 9:
+        #ifdef TMSLAB_WIN
+	    case 9:
+        #else
+	    case 10:
+        #endif
 		 this->DrawArrowLeft();
 		 break;
 
@@ -195,40 +214,81 @@ void LCDDrawing::PIDParamitersValue(int CodeKay)
 {
 	switch(CodeKay)
 	{
-	case 1:				/* KP */
+        #ifdef TMSLAB_WIN
+        case 1:				/* KP */
+        #else
+        case 16:
+        #endif
 		*usKP += stepReg;
-
 		break;
 
-	case 4:
-		*usKP -= stepReg;
-
+        #ifdef TMSLAB_WIN
+        case 4:
+        #else
+        case 8:
+        #endif
+            if(*usKP > 0)
+            {
+                *usKP -= stepReg;
+            } else {
+                *usKP = 0;
+            }
 		break;
 
-	case 2: 			/* TD */
+        #ifdef TMSLAB_WIN
+        case 2: 			/* TD */
+        #else
+        case 15:
+        #endif
 		*usTD += stepReg;
-
 		break;
 
-	case 5:
-		*usTD -= stepReg;
-
+        #ifdef TMSLAB_WIN
+        case 5:
+        #else
+        case 7:
+        #endif
+            if(*usTD > 0)
+            {
+                *usTD -= stepReg;
+            } else {
+                *usTD = 0;
+            }
 		break;
 
-	case 3: 			/* TI */
+        #ifdef TMSLAB_WIN
+        case 3: 			/* TI */
+        #else
+        case 14:
+        #endif
 		*usTI += stepReg;
-
 		break;
 
-	case 6:
-		*usTI -= stepReg;
-
+        #ifdef TMSLAB_WIN
+        case 6:
+        #else
+        case 6:
+        #endif
+            if(*usTI > 0)
+            {
+                *usTI -= stepReg;
+            } else {
+                *usTI = 0;
+            }
 		break;
 
-	case 7:				/* Z */
+        #ifdef TMSLAB_WIN
+        case 7:				/* Z */
+        #else
+        case 12:
+        #endif
 		break;
 
-	case 9:
+        #ifdef TMSLAB_WIN
+        case 9:
+        #else
+        case 10:
+        #endif
 		break;
 
 	default:
