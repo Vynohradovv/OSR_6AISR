@@ -4,11 +4,13 @@
 
 #include "PID.h"
 
-PID::PID(float Kp, float Ti, float Td,float Tp,float Smin,float Smax)
+PID::PID(float *Kp, float *Ti, float *Td,float Tp,float Smin,float Smax)
 {
-	m_Tp = Tp; m_Kp = Kp;
-	m_Ki = Kp * Tp / Ti;
-	m_Kd = Kp * Td / Tp;
+	m_Tp = Tp;
+	m_Kp = Kp;
+	m_Ki = Ti;
+	m_Kd = Td;
+
 	m_in = 0;
 	m_prevIn = 0;
 	m_setpoint = 0;
@@ -19,16 +21,21 @@ PID::PID(float Kp, float Ti, float Td,float Tp,float Smin,float Smax)
 
 void PID::Calculate(void)
 {
+
 	float error = (float)(m_setpoint - m_in);
 
-	m_sum += error * m_Ki;
+	float Pout = *m_Kp * error;
 
+	m_sum += error * m_Tp;
 	if(m_sum>m_Smax) m_sum=m_Smax;
 	if(m_sum<m_Smin) m_sum=m_Smin;
 
-	float deltaIn = m_Kd * (error - m_prevIn);
+	float Iout = *m_Ki * m_sum;
 
-	m_out = m_Kp * (error + deltaIn + m_sum);
+	float varKD = (error - m_prevIn) / m_Tp;
+	float Dout = *m_Kd * varKD;
+
+	m_out = Pout + Iout + Dout;
 
 	m_prevIn = error;
 

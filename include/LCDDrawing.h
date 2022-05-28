@@ -18,11 +18,13 @@ private:
 	float regKP,regT,*regZ;
 	float stepReg;
 
+	void Plot(void);
 	void RoadMove(void);
 	void PrintMenu(void);
 	void ClearScreen(void);
 	void DrawArrowLeft(void);
 	void DrawArrowRight(void);
+	void Ship(int size_x, int size_y);
 	void Square(int size_x, int size_y);
 	void PIDParamitersValue(int CodeKay);
 	void MoveSquare(int dx, int dy, int angle);
@@ -36,7 +38,7 @@ public:
 
 	LCDDrawing(void);
 
-	void SetMenuParamiters(float *kp, float *td, float *ti);
+	void SetMenuParamiters(float *kp, float *ti, float *td);
 	void SetObjectParamiters(float objKP, float objT, float *objZ);
 
 	void MoveSquare(int dx, int dy);

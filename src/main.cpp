@@ -40,14 +40,14 @@ int Tim = 0;                // Licznik uzytkownika
 unsigned int preScale = 0;  // Preskaler licznika uzytkownika
 volatile char EnableRefresh = 0;    //Zezwolenie na odswiezenie zawartosci pamieci graficznej
 
-double Kp = 1.3;
-double Ki = 10;
-double Kd = 5;
+float Kp = 1;
+float Ki = 0.5;
+float Kd = 0.3;
 
 R_P_LCD_TMSLAB LCD;             // Obiekt obslugujacy LCD
 R_P_KEYBOARD_TMSLAB KEYBOARD;   // Obiekt obslugujacy klawiature
 R_P_LEDBAR_TMSLAB LEDBAR;       // Obiekt obslugujacy diody LED
-Ship myShip(Kp, Ki, Kd);
+Ship myShip(&Kp, &Ki, &Kd);
 
 //Tablice danych/obiektow graficznych
 #define MaxObj 240
@@ -112,7 +112,7 @@ void Drawline(void);
 #ifdef WIN_PLOT
 	// Zapis danych do pliku
 	fprintf(outputCSV,CSV_DANE);
-	//printf("time %i \n",Tim);
+//	printf("time %i \n",Tim);
 	fflush(outputCSV);
 	fflush(stdout);
 #endif
