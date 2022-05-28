@@ -130,8 +130,8 @@ void LCDDrawing::DrawArrowRight(void)
 		i--;
 	}
 
-	*regZ = (Tim % 10);
-	this->MoveSquare(*regZ, (-Tim % 3));
+	*regZ += (Tim % 2);
+	this->MoveSquare(*regZ, 0);
 }
 
 
@@ -158,8 +158,8 @@ void LCDDrawing::DrawArrowLeft(void)
 		i--;
 	}
 
-	*regZ = (-Tim % 10);
-	this->MoveSquare(*regZ, (Tim % 3));
+	*regZ += (-Tim % 2);
+	this->MoveSquare(*regZ, 0);
 }
 
 LCDDrawing::LCDDrawing(void)
@@ -264,13 +264,12 @@ void LCDDrawing::PrintMenu(void)
 
 void LCDDrawing::RoadMove(void)
 {
-    for(int i=0; i< LCD_H; i++)
+    for(int i = 30; i < 96; i++)
     {
         if(!(i%5))
         {
-            SetPixel(ekran,(LCD_W/2),(i + (Tim % 2)));
+        	SetPixel(ekran,120,i);
         }
-
     }
 }
 
@@ -467,35 +466,46 @@ void LCDDrawing::ClearScreen(void)
 
 void LCDDrawing::Plot(void)
 {
-	for (int x = 0; x < 240; x++)
+	static int dDisruption[LCD_W] = {0};
+	static int dPIDout[LCD_W] = {0};
+	int time_step = Tim % LCD_W;
+
+	for (int x = 0; x < LCD_W; x++)
 	{
-		SetPixel(ekran, (x), 96);
-		for(int y = 96; y < 128; y++)
-		{
-			SetPixel(ekran, 0, y);
-			SetPixel(ekran, 59, y);
-			SetPixel(ekran, 119, y);
-			SetPixel(ekran, 179, y);
-			SetPixel(ekran, 239, y);
-		}
+		SetPixel(ekran,x, 96);
 	}
 
-	// Rysowanie wykresu
-
-	for(int i = 59; i > 0; i--)
+	if((int)*regZ == 0)
 	{
-		if(!(i%2))
+		if((time_step != 0)&&(dDisruption[time_step - 1] != 0))
 		{
-			SetPixel(ekran,(i + (Tim % 2)),(int)(*regZ + 112));
+			if(dDisruption[time_step - 1] > 0)
+				dDisruption[time_step] = dDisruption[time_step - 1] - 1;
+			else if(dDisruption[time_step - 1] < 0)
+				dDisruption[time_step] = dDisruption[time_step - 1] + 1;
+			else
+				dDisruption[time_step - 1] = 0;
+		}else{
+
+			dDisruption[time_step] = 0;
 		}
+
+	} else {
+
+		dDisruption[time_step] = ~((int)*regZ);
 	}
 
-	for(int i = 119; i > 59; i--)
+	dPIDout[time_step] = ((int)outPID / 20);
+
+	for(int i = 0; i < time_step; i++)
 	{
-		if(!(i%2))
-		{
-			SetPixel(ekran,(i + (Tim % 2)),(int)((outPID/100) + 112.0));
-		}
+		if(((dDisruption[i] + 112) < LCD_H) &&
+			((dDisruption[i] + 112) > 96))
+			SetPixel(ekran,i, (dDisruption[i] + 112));
+
+		if(((dPIDout[i] + 112) < LCD_H) &&
+			((dPIDout[i] + 112) > 96))
+			SetPixel(ekran,i, (dPIDout[i] + 112));
 	}
 
 }

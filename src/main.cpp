@@ -41,7 +41,7 @@ unsigned int preScale = 0;  // Preskaler licznika uzytkownika
 volatile char EnableRefresh = 0;    //Zezwolenie na odswiezenie zawartosci pamieci graficznej
 
 float Kp = 1;
-float Ki = 0.5;
+float Ki = 1.5;
 float Kd = 0.3;
 
 R_P_LCD_TMSLAB LCD;             // Obiekt obslugujacy LCD
@@ -205,7 +205,7 @@ void Drawline(void);
     {}
     void Timer2Isr()
     {
-        if(++preScale==500)
+        if(++preScale==50)
         {   preScale=0;
         	Tim++;
         }
